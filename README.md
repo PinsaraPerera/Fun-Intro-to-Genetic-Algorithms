@@ -23,22 +23,25 @@ That's the core idea behind Genetic Algorithms. This project demonstrates what a
 ### The Evolution Process
 
 1. **Initialization**: Each agent gets a random path (sequence of movement vectors)
-2. **Simulation**: Agents follow their paths simultaneously
-3. **Selection**: The agent that gets closest to the target becomes the "fittest"
-4. **Reproduction**: All agents inherit the best path as their base
-5. **Mutation**: Each agent's path gets slightly randomized
-6. **Repeat**: The cycle continues, with each generation getting better
+2. **Simulation**: Agents follow their paths simultaneously, with the best agent highlighted in red
+3. **Fitness Evaluation**: Agents are scored based on distance to target
+4. **Selection**: Agents are sorted by fitness, with the best performers selected as parents
+5. **Crossover**: Child agents inherit path segments from two parent agents
+6. **Mutation**: Random variations are added to the last part of each agent's path
+7. **Elitism**: The best agent from each generation survives unchanged
+8. **Success Detection**: Simulation stops when an agent successfully reaches the target!
 
 ![Generation 1](GA1.png) ![Generation Later](GA2.png)
 
 ### Key Genetic Algorithm Components
 
-- **Population**: 10 agents per generation
-- **Genome**: Each agent's path (300 movement steps)
-- **Fitness Function**: Distance to target (lower = better)
-- **Selection**: Best performing agent becomes the parent
-- **Mutation**: Random variations added to movement vectors
-- **Crossover**: Not implemented in this simple version
+- **Population**: 10 agents per generation with color-coded visualization
+- **Genome**: Each agent's path (120 movement steps)
+- **Fitness Function**: Euclidean distance to target (lower = better)
+- **Selection**: Tournament selection from top 50% of population
+- **Mutation**: Targeted mutations on the final 40 steps of the path
+- **Crossover**: Single-point crossover between two parent agents
+- **Elitism**: Best agent automatically survives to next generation
 
 ## 🚀 Getting Started
 
@@ -55,10 +58,11 @@ That's the core idea behind Genetic Algorithms. This project demonstrates what a
 4. Watch the magic happen! 🎭
 
 ### What You'll See
-- Yellow dots (agents) moving from left to right
+- Colorful agents moving from left to right (red = best performer, others in rainbow colors)
 - A generation counter showing evolutionary progress
 - Agents getting progressively better at avoiding the obstacle
-- Eventually, agents will find efficient paths around the barrier
+- **Success message** when an agent finally reaches the target!
+- The simulation stops automatically upon success, showing which agent and generation achieved it
 
 ## 🎛️ Customization
 
@@ -66,9 +70,10 @@ You can tweak various parameters to experiment:
 
 ```processing
 int NUMBER_OF_AGENTS = 10;     // Population size
-int STEPS = 300;               // Path length (genome size)
+int STEPS = 120;               // Path length (genome size)
 float TARGET_X = 550;          // Target position
 float TARGET_Y = 200;
+int frameRate = 60;            // Simulation speed
 ```
 
 ### Try These Experiments:
@@ -76,41 +81,50 @@ float TARGET_Y = 200;
 - **Adjust mutation rate**: Change the random range in the `mutate()` function
 - **Move the obstacle**: Modify the barrier position in `draw()`
 - **Add more obstacles**: Create a more complex maze
+- **Change crossover point**: Modify where parent paths are combined
+- **Adjust mutation scope**: Change which steps get mutated (currently last 40)
 
 ## 🧠 Learning Outcomes
 
 This simulation demonstrates key concepts:
 
 - **Emergent Behavior**: Complex pathfinding emerges from simple rules
-- **Natural Selection**: Better solutions naturally dominate
-- **Genetic Drift**: Random mutations can lead to improvements
-- **Convergence**: Population gradually focuses on optimal solutions
+- **Natural Selection**: Better solutions naturally dominate through sorting
+- **Genetic Recombination**: Crossover combines successful strategies from multiple parents
+- **Targeted Mutation**: Strategic mutations focus on the end of paths for fine-tuning
+- **Elitist Strategy**: Preserving the best solution while exploring variations
+- **Success Convergence**: Evolution naturally leads to problem-solving success
 
 ## 🔧 Technical Details
 
 ### Core Classes
-- **Agent**: Represents individual organisms with position, path, and fitness
+- **Agent**: Represents individual organisms with position, path, fitness, and color-coded rendering
 - **DrawLine**: Handles the visual starting line indicator
 
 ### Key Functions
-- `set_best_agents_path()`: Selection and inheritance mechanism
-- `mutate()`: Introduces random variations
-- `calculateDistance()`: Fitness evaluation
+- `next_generation()`: Implements elitist selection with crossover and mutation
+- `crossover()`: Creates child agents by combining parent paths at random cut points
+- `mutate()`: Introduces targeted random variations in the final path segments
+- `calculateDistance()`: Fitness evaluation using Euclidean distance
 
 ### Evolution Strategy
-This implementation uses a **(1+λ)-ES** evolution strategy:
-- Single parent (best agent)
-- Lambda offspring (all other agents)
-- Elitist selection (best always survives)
+This implementation uses an **Elitist Genetic Algorithm** with:
+- **Fitness-proportionate selection** from top 50% of population
+- **Single-point crossover** between two randomly selected parents
+- **Targeted mutation** on the last 40 movement steps
+- **Elitism** ensuring the best agent always survives
+- **Success detection** to automatically stop when target is reached
 
 ## 🎯 Future Enhancements
 
-- [ ] Implement crossover between multiple parents
-- [ ] Add dynamic obstacles
-- [ ] Implement different selection strategies (tournament, roulette wheel)
-- [ ] Add real-time parameter adjustment
+- [ ] Implement different crossover strategies (multi-point, uniform)
+- [ ] Add dynamic obstacles that move between generations
+- [ ] Implement tournament selection with different tournament sizes
+- [ ] Add real-time parameter adjustment with keyboard controls
 - [ ] 3D environment navigation
-- [ ] Multi-objective optimization (speed + efficiency)
+- [ ] Multi-objective optimization (speed + efficiency + path smoothness)
+- [ ] Population diversity metrics and visualization
+- [ ] Different mutation strategies (Gaussian, adaptive)
 
 ## 🤝 Contributing
 
